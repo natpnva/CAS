@@ -1,0 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+Zfe_solar = 0.0018
+abundance_factor = 1.4
+
+# Output files from Fortran
+files = {
+    0: "iron_0gyr.dat",
+    1: "iron_1gyr.dat",
+    2: "iron_2gyr.dat",
+    5: "iron_5gyr.dat"
+}
+
+plt.figure(figsize=(9, 6))
+
+for time, filename in files.items():
+
+    # Load radius [kpc] and iron mass fraction
+    radius, zfe = np.loadtxt(filename, unpack=True)
+
+    # Convert to professor's abundance convention,
+    # expressed in solar units
+    Zfe = abundance_factor * zfe / Zfe_solar
+
+    plt.plot(radius, Zfe, label=f"t = {time} Gyr")
+
+# Plot formatting
+plt.xlabel("Radius [kpc]")
+plt.ylabel(r"Iron excess abundance [$Z_{\rm Fe,\odot}$]")
+plt.title("Evolution of iron abundance: diffusion only experiment")
+
+plt.xlim(0, 500)
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.tight_layout()
+
+plt.show()
